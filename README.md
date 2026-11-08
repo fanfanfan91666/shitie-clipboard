@@ -1,6 +1,6 @@
 # 拾贴 Shitie · Windows 剪切板小工具
 
-[![Version](https://img.shields.io/badge/version-1.0.1-087F79)](https://github.com/fanfanfan91666/shitie-clipboard/releases/latest)
+[![Version](https://img.shields.io/badge/version-1.0.2-087F79)](https://github.com/fanfanfan91666/shitie-clipboard/releases/latest)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-132B38)
 ![Runtime](https://img.shields.io/badge/.NET-8-512BD4)
 
@@ -29,6 +29,7 @@
 - 默认历史内容空间上限 512 MB，可调整到 128 MB / 1 GB / 2 GB。超限按最早记录先清理。
 - 启动、复制后以及每 10 分钟清理一次。缩短保留设置前会确认。
 - 单实例运行，重复打开会唤起已有窗口。
+- 历史列表支持像素滚动、滚轮缓动和高精度滚轮增量，拖动滚动条时实时跟手；仍保留长列表的容器复用。关闭 Windows 界面动画时，使用无缓动的像素滚动。
 
 ## 数据与边界
 
@@ -67,6 +68,9 @@
 # 额外测试真实系统剪切板；过程中会临时替换并恢复当前剪切板
 .\test.ps1 -Clipboard
 
+# 验证滚动的实际逐帧位移、连续输入与长列表容器复用
+.\test.ps1 -Scroll
+
 # 本机安装
 .\install.ps1
 ```
@@ -80,11 +84,18 @@ Shitie/              WPF 界面、剪切板监听、加密历史和音效逻辑
   Core/              数据模型、历史存储和音效规则
   Windows/           Windows 系统接口
   Assets/            应用图标
+  Controls/          平滑滚动交互
 tools/               图标生成辅助脚本（需要 Python / Pillow）
 build.ps1            构建独立 exe 与 ZIP 包
 test.ps1             本地功能与可选剪切板集成测试
 install.ps1          安装到当前 Windows 用户
 ```
+
+### 1.0.2
+
+- 历史列表从整条卡片跳动改为连续的像素滚动，并加入逐帧缓动。
+- 连续滚轮输入累积目标位置，反向滚动立即改变方向；点击、拖动滚动条或按键操作会中止缓动。
+- 设置页面也使用平滑滚动。窗口隐藏或滚动结束后停止动画，不持续占用渲染资源。
 
 ### 1.0.1
 

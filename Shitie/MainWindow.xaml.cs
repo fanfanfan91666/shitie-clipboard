@@ -6,6 +6,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Shitie.Core;
+using Shitie.Controls;
 using Shitie.Windows;
 
 namespace Shitie;
@@ -75,6 +76,7 @@ public partial class MainWindow : Window
             var selected = (HistoryList.SelectedItem as ClipEntry)?.Id;
             var result = await _app.LoadAsync(SearchBox.Text.Trim(), _filter, _limit);
             if (version != _refreshVersion) return;
+            SmoothScroll.Cancel(HistoryList);
             _items.Clear(); foreach (var item in result.Entries) _items.Add(item);
             StatsLabel.Text = $"{result.Count:N0} 条记录  ·  {result.Bytes / 1048576d:0.0} MB";
             EmptyPanel.Visibility = _items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;

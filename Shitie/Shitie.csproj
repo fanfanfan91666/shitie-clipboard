@@ -10,7 +10,7 @@
     <ApplicationIcon>Assets\shitie.ico</ApplicationIcon>
     <AssemblyName>Shitie</AssemblyName>
     <RootNamespace>Shitie</RootNamespace>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Product>拾贴剪切板</Product>
     <Description>本地剪切板历史与复制反馈</Description>
     <Company>拾贴</Company>

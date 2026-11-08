@@ -144,6 +144,7 @@ internal static class SelfTests
             var id = history.Upsert(screenshot);
             Check(history.Get(id)?.Png?.Length > 0 && history.Stats().Count == 1, "Silent screenshot was excluded from history");
         });
+        if (args.Contains("--scroll")) Test("Pixel scrolling renders intermediate frames and preserves virtualization", () => results.Add(ScrollTests.Run()));
         if (args.Contains("--clipboard")) Test("Live Windows clipboard listener, repeated content, exclusions and restore", () =>
         {
             using var producer = new System.Windows.Interop.HwndSource(new System.Windows.Interop.HwndSourceParameters("Shitie test producer") { ParentWindow = new IntPtr(-3), WindowStyle = 0 });
@@ -219,7 +220,7 @@ internal static class SelfTests
         var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
         using var stream = new MemoryStream(); encoder.Save(stream); return stream.ToArray();
     }
-    private static bool PumpUntil(Func<bool> ready, int timeout)
+    internal static bool PumpUntil(Func<bool> ready, int timeout)
     {
         if (ready()) return true;
         var frame = new System.Windows.Threading.DispatcherFrame();

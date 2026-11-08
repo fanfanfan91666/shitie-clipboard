@@ -9,6 +9,13 @@ internal static class Program
     public static int Main(string[] args)
     {
         if (args.Contains("--self-test")) return SelfTests.Run(args);
+        if (args.Contains("--scroll-demo"))
+        {
+            var demoRoot = Path.Combine(Path.GetTempPath(), "ShitieScrollDemo-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(demoRoot);
+            ScrollTests.SeedDemo(demoRoot);
+            args = ["--test-profile", demoRoot];
+        }
         var testIndex = Array.IndexOf(args, "--test-profile");
         var testProfile = testIndex >= 0 && testIndex + 1 < args.Length;
         var root = testProfile ? Path.GetFullPath(args[testIndex + 1]) : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Shitie");
