@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <StartupObject>Shitie.Program</StartupObject>
+    <ApplicationIcon>Assets\shitie.ico</ApplicationIcon>
+    <AssemblyName>Shitie</AssemblyName>
+    <RootNamespace>Shitie</RootNamespace>
+    <Version>1.0.1</Version>
+    <Product>拾贴剪切板</Product>
+    <Description>本地剪切板历史与复制反馈</Description>
+    <Company>拾贴</Company>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="Assets\shitie.ico" />
+  </ItemGroup>
+</Project>

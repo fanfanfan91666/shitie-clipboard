@@ -1,0 +1,96 @@
+# 拾贴 Shitie · Windows 剪切板小工具
+
+[![Version](https://img.shields.io/badge/version-1.0.1-087F79)](https://github.com/fanfanfan91666/shitie-clipboard/releases/latest)
+![Platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-132B38)
+![Runtime](https://img.shields.io/badge/.NET-8-512BD4)
+
+拾贴独立监听 Windows 系统剪切板，不依赖输入法接口。更换输入法后依然可用。通过本地历史记录和复制 / 剪切成功音效，让复制内容更容易找回，也更容易确认是否复制成功。
+
+## 直接使用
+
+- 从 [Releases 下载 Windows x64 独立版](https://github.com/fanfanfan91666/shitie-clipboard/releases/latest)，解压后运行 `Shitie.exe`。无需 Java、Python，也无需另装 .NET。
+- 从源码构建时，程序输出到 `release\Shitie.exe`；安装后可双击桌面的“拾贴剪切板”。
+- 默认按 **Ctrl + Shift + V** 唤起 / 收起历史窗口。
+- 双击右下角托盘图标打开历史；右键可进入设置、暂停 / 继续记录或退出。
+- 关闭窗口或按 Esc 会收起到托盘，程序仍在后台运行。
+- 默认启用开机自启动。可在“偏好设置”中关闭。
+
+## 已实现
+
+- 文字、图片、文件 / 文件夹路径历史；文字的 HTML / RTF 格式一并保留，预览按纯文字显示。
+- 搜索完整文字、文件名、路径或来源应用，按文字 / 图片 / 文件筛选，分批加载。
+- 查看完整内容、单条删除、一键清空；双击或按 Enter 重新复制，成功后自动移到历史最前。
+- 相同内容去重；重新复制会刷新它的保留时间。
+- 复制和剪切分别设置提示音开关、四种内置音色、自定义本地 WAV、音量和试听。
+- 默认启用“系统截图自动复制时，拾贴不重复播放音效”：仅对 Windows 截图工具产生的图片静音，历史仍正常保存。浏览器、画图等其他软件复制图片照常反馈；截图工具中按 Ctrl+C 主动复制，以及从拾贴历史重新复制图片也照常反馈。
+- 只有系统剪切板确实更新并成功读取后才播放反馈；重复复制相同文字也能反馈。
+- 自定义全局快捷键；占用冲突时提示，保留原快捷键。
+- 默认保留 365 天，可改为 7 / 30 / 90 / 180 天、两年或永久。
+- 默认历史内容空间上限 512 MB，可调整到 128 MB / 1 GB / 2 GB。超限按最早记录先清理。
+- 启动、复制后以及每 10 分钟清理一次。缩短保留设置前会确认。
+- 单实例运行，重复打开会唤起已有窗口。
+
+## 数据与边界
+
+- 默认数据目录：`%LOCALAPPDATA%\Shitie`。设置中可直接打开。
+- 历史内容、预览和来源使用 Windows 当前账户加密，数据库为本地 SQLite；程序没有联网、上传或遥测功能。设置文件不加密。
+- 不能直接把数据库搬到其他 Windows 账户解密使用。关闭程序后再备份整个数据目录。
+- 尊重应用写入的 `ExcludeClipboardContentFromMonitorProcessing` 和 `CanIncludeInClipboardHistory=0` 标记。不保证所有软件都会为密码提供这些标记，输入敏感内容前可暂停记录。
+- Ctrl+X、Shift+Delete 和带移动标记的文件剪切可识别为剪切。Windows 对部分右键菜单文字剪切不提供类型信息，这时播放复制提示音。
+- 截图静音按剪切板提供程序判断，识别 SnippingTool、ScreenClippingHost、ScreenSketch。不会仅因“刚按过截图键”就静音所有图片。部分软件右键复制没有明确的主动复制标记，所以在截图工具里用鼠标复制图片也可能静音；可按 Ctrl+C 或在设置中关闭截图静音选项。通过其他程序或未知来源写入剪切板的截图可能仍会响。
+- 文件历史只保存路径，不备份文件。原文件移走或删除后会提示无法恢复；从历史重新复制文件时统一作为复制，避免重复移动源文件。
+- 单条文字上限 200 万个 UTF-16 字符；图片上限 16 MB、2500 万像素；文件列表上限 1 万项。超过限制或应用专用的复杂对象不会保存。音效只为能够读取的支持格式提供反馈。
+- 默认只记录程序启动之后的复制。软件关闭期间的内容，以及安装之前的历史无法补回。
+- 保留期限按**最近复制时间**计算。系统时间修改可能影响清理时机。
+- 空间上限指加密历史内容大小；数据库索引、空闲页和日志会占用额外磁盘空间。删除的页面逐步回收，清空历史时压缩数据库。
+- 兼容 Windows 10 / 11 64 位。完整退出请使用托盘菜单。
+
+## 安装与移除
+
+`install.ps1` 会把程序复制到 `%LOCALAPPDATA%\Programs\Shitie`，创建桌面和开始菜单快捷方式并启动。开机启动使用当前用户注册表 Run 项，无需管理员权限。已安装时会先让旧实例正常退出。
+
+停止使用时，在设置中关闭开机自启动，再从托盘退出。删除快捷方式和安装目录即可移除程序。历史数据保留在上述数据目录，需要时可另外删除。
+
+## 源码与验证
+
+使用 C# / WPF、.NET 8、Windows 自带 SQLite 和 DPAPI。项目没有第三方 NuGet 依赖。
+
+仓库包含程序源码、图标资源、构建 / 测试 / 安装脚本。生成的程序放在 Releases，运行时数据库、个人设置和本地备份不进入源码仓库。
+
+```powershell
+# 编译并生成独立 exe 和打包文件（需要 .NET 8 或更新 SDK）
+.\build.ps1
+
+# 测试本地保存、加密、搜索、清理、格式与设置
+.\test.ps1
+
+# 额外测试真实系统剪切板；过程中会临时替换并恢复当前剪切板
+.\test.ps1 -Clipboard
+
+# 本机安装
+.\install.ps1
+```
+
+构建首次发布需要下载微软 .NET 运行时包，日常使用不需要网络。
+
+### 目录结构
+
+```text
+Shitie/              WPF 界面、剪切板监听、加密历史和音效逻辑
+  Core/              数据模型、历史存储和音效规则
+  Windows/           Windows 系统接口
+  Assets/            应用图标
+tools/               图标生成辅助脚本（需要 Python / Pillow）
+build.ps1            构建独立 exe 与 ZIP 包
+test.ps1             本地功能与可选剪切板集成测试
+install.ps1          安装到当前 Windows 用户
+```
+
+### 1.0.1
+
+- 新增系统截图自动复制时静音的选项，避免与 Windows 截图提示音叠加。
+- 普通图片复制、截图工具内 Ctrl+C 主动复制、历史内容重新复制保留音效。
+- 改善剪切板更新时的来源识别。
+- 已通过 8 组功能与真实系统剪切板测试。
+
+系统接口依据：[微软剪切板监听说明](https://learn.microsoft.com/en-us/windows/win32/dataxchg/using-the-clipboard)、[剪切板历史排除标记](https://learn.microsoft.com/en-us/windows/win32/dataxchg/clipboard-formats)、[全局快捷键](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerhotkey)。
